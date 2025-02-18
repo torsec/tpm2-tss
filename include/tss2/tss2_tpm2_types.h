@@ -8,6 +8,7 @@
 #define TSS2_TPMS_TYPES_H
 
 #include "tss2_common.h"
+#include <oqs/oqs.h>
 
 #ifndef TSS2_API_VERSION_1_2_1_108
 #error Version mismatch among TSS2 header files.
@@ -42,6 +43,10 @@
 #define TPM2_MAX_ECC_KEY_BYTES  128
 #define TPM2_MAX_SYM_KEY_BYTES  32
 #define TPM2_MAX_RSA_KEY_BYTES  512
+
+#define TPM2_SPHINCS_PUBLIC_KEY_BITS 64
+#define TPM2_SPHINCS_SECRET_KEY_BITS 128
+#define TPM2_SPHINCS_SIGNATURE_BITS  49856
 
 /* Capability buffer sizes*/
 #define TPM2_LABEL_MAX_BUFFER 32
@@ -114,8 +119,9 @@ typedef UINT16 TPM2_ALG_ID;
 #define TPM2_ALG_CBC                 ((TPM2_ALG_ID) 0x0042)
 #define TPM2_ALG_CFB                 ((TPM2_ALG_ID) 0x0043)
 #define TPM2_ALG_ECB                 ((TPM2_ALG_ID) 0x0044)
+#define TPM2_ALG_SPHINCS_SHAKE_256F  ((TPM2_ALG_ID) 0x0045)
 #define TPM2_ALG_FIRST               ((TPM2_ALG_ID) 0x0001)
-#define TPM2_ALG_LAST                ((TPM2_ALG_ID) 0x0044)
+#define TPM2_ALG_LAST                ((TPM2_ALG_ID) 0x0045)
 
 /* From TCG Algorithm Registry: Definition of TPM2_ECC_CURVE Constants */
 typedef UINT16                TPM2_ECC_CURVE;
@@ -1636,6 +1642,13 @@ struct TPM2B_PUBLIC_KEY_RSA {
     BYTE buffer[TPM2_MAX_RSA_KEY_BYTES];
 };
 
+/* Definition of SPHINCS TPM2B_PUBLIC_KEY_SPHINCS Structure */
+typedef struct TPM2B_PUBLIC_KEY_SPHINCS TPM2B_PUBLIC_KEY_SPHINCS;
+struct TPM2B_PUBLIC_KEY_SPHINCS {
+    UINT16 size;
+    BYTE buffer[TPM2_SPHINCS_PUBLIC_KEY_BITS];
+};
+
 /* Definition of RSA TPM2_KEY_BITS TPMI_RSA_KEY_BITS Type */
 typedef TPM2_KEY_BITS TPMI_RSA_KEY_BITS;
 
@@ -1644,6 +1657,13 @@ typedef struct TPM2B_PRIVATE_KEY_RSA TPM2B_PRIVATE_KEY_RSA;
 struct TPM2B_PRIVATE_KEY_RSA {
     UINT16 size;
     BYTE buffer[TPM2_MAX_RSA_KEY_BYTES/2 * 5];
+};
+
+/* Definition of SPHINCS TPM2B_PRIVATE_KEY_RSA */
+typedef struct TPM2B_PRIVATE_KEY_SPHINCS TPM2B_PRIVATE_KEY_SPHINCS;
+struct TPM2B_PRIVATE_KEY_SPHINCS {
+    UINT16 size;
+    BYTE buffer[TPM2_SPHINCS_SECRET_KEY_BITS];
 };
 
 /* Definition of ECC TPM2B_ECC_PARAMETER Structure */
@@ -1767,6 +1787,7 @@ union TPMU_PUBLIC_ID {
     TPM2B_DIGEST keyedHash;
     TPM2B_DIGEST sym;
     TPM2B_PUBLIC_KEY_RSA rsa;
+    TPM2B_PUBLIC_KEY_SPHINCS sphincs;
     TPMS_ECC_POINT ecc;
     TPMS_DERIVE derive;
 };
@@ -1855,6 +1876,7 @@ struct TPM2B_PRIVATE_VENDOR_SPECIFIC {
 typedef union TPMU_SENSITIVE_COMPOSITE TPMU_SENSITIVE_COMPOSITE;
 union TPMU_SENSITIVE_COMPOSITE {
     TPM2B_PRIVATE_KEY_RSA rsa;         /* a prime factor of the public key */
+    TPM2B_PRIVATE_KEY_SPHINCS sphincs; /* the sphincs private key*/
     TPM2B_ECC_PARAMETER ecc;           /* the integer private key */
     TPM2B_SENSITIVE_DATA bits;         /* the private data */
     TPM2B_SYM_KEY sym;                 /* the symmetric key */
