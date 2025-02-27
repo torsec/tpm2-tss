@@ -1160,6 +1160,14 @@ TPMS_UNMARSHAL_2(TPMS_SIGNATURE_RSA,
                  hash, Tss2_MU_UINT16_Unmarshal,
                  sig, Tss2_MU_TPM2B_PUBLIC_KEY_RSA_Unmarshal)
 
+TPMS_MARSHAL_2(TPMS_SIGNATURE_SPHINCS,
+		hash, VAL, Tss2_MU_UINT16_Marshal,
+		sig, ADDR, Tss2_MU_TPM2B_SIGNATURE_SPHINCS_Marshal)
+
+TPMS_UNMARSHAL_2(TPMS_SIGNATURE_SPHINCS,
+		hash, Tss2_MU_UINT16_Unmarshal,
+		sig, Tss2_MU_TPM2B_SIGNATURE_SPHINCS_Unmarshal)
+
 TPMS_MARSHAL_3(TPMS_SIGNATURE_ECC,
                hash, VAL, Tss2_MU_UINT16_Marshal,
                signatureR, ADDR, Tss2_MU_TPM2B_ECC_PARAMETER_Marshal,
