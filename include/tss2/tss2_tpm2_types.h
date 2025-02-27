@@ -1649,6 +1649,13 @@ struct TPM2B_PUBLIC_KEY_SPHINCS {
     BYTE buffer[TPM2_SPHINCS_PUBLIC_KEY_BITS];
 };
 
+/* Definition of SPHINCS TPM2B_SIGNATURE_SPHINCS Structure */
+typedef struct TPM2B_SIGNATURE_SPHINCS TPM2B_SIGNATURE_SPHINCS;
+struct TPM2B_SIGNATURE_SPHINCS {
+    UINT16 size;
+    BYTE buffer[TPM2_SPHINCS_SIGNATURE_BITS];
+};
+
 /* Definition of RSA TPM2_KEY_BITS TPMI_RSA_KEY_BITS Type */
 typedef TPM2_KEY_BITS TPMI_RSA_KEY_BITS;
 
@@ -1723,6 +1730,13 @@ struct TPMS_SIGNATURE_RSA {
     TPM2B_PUBLIC_KEY_RSA sig; /* The signature is the size of a public key. */
 };
 
+/* Definition of SPHINCS TPMS_SIGNATURE_SPHINCS Structure*/
+typedef struct TPMS_SIGNATURE_SPHINCS TPMS_SIGNATURE_SPHINCS;
+struct TPMS_SIGNATURE_SPHINCS {
+	TPMI_ALG_HASH hash;
+	TPM2B_SIGNATURE_SPHINCS sig;
+};
+
 /* Definition of Types for RSA Signature */
 typedef TPMS_SIGNATURE_RSA TPMS_SIGNATURE_RSASSA;
 typedef TPMS_SIGNATURE_RSA TPMS_SIGNATURE_RSAPSS;
@@ -1752,6 +1766,7 @@ union TPMU_SIGNATURE {
     TPMS_SIGNATURE_ECSCHNORR ecschnorr; /* all asymmetric signatures */
     TPMT_HA hmac;                       /* HMAC signature required to be supported */
     TPMS_SCHEME_HASH any;               /* used to access the hash */
+    TPMS_SIGNATURE_SPHINCS sphincs;
     TPMS_EMPTY null;                    /* TPM2_ALG_NULL */
 };
 
